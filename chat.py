@@ -7,7 +7,7 @@ from llama_index.core.query_engine.retriever_query_engine import RetrieverQueryE
 from llama_index.core.callbacks import CallbackManager
 from llama_index.core import Settings
 
-from utils import count_tokens, trim_chat_history, MAX_TOKEN_LIMIT, MODEL_COSTS, MODEL
+from utils import count_tokens, trim_chat_history, create_cost_summary, MAX_TOKEN_LIMIT, MODEL_COSTS, MODEL
 
 from llama_index.core import (
     Settings,
@@ -76,11 +76,10 @@ async def response_chat(message: cl.Message):
         query_input = f"Given the following conversation history:\n{context}\nAssistant:"
 
     # Count tokens
-    current_token_count = count_tokens(chat_history)
-    print(f"Current token count: {current_token_count}")
+    input_token_count = count_tokens(chat_history)
 
     # Trim history if necessary
-    if current_token_count > MAX_TOKEN_LIMIT:
+    if input_token_count > MAX_TOKEN_LIMIT:
         chat_history = trim_chat_history(chat_history)
         print("Chat history trimmed.")
 
@@ -88,12 +87,22 @@ async def response_chat(message: cl.Message):
     res = await cl.make_async(query_engine.query)(query_input)
 
     # Stream response from the model
+    response_content = ""
     for token in res.response_gen:
-        await msg.stream_token(token)
-    await msg.send()
+        response_content += token
+        
 
     # Add assistant response to chat history
     chat_history.append({"role": "assistant", "content": msg.content})
+    
+    cost_summary = create_cost_summary(chat_history, response_content)
+    full_response = response_content + cost_summary
+    
+    # Send the final message with the combined response and cost summary
+    await cl.Message(
+        author="Assistant",
+        content=full_response
+    ).send()
     
     
 @cl.on_chat_resume

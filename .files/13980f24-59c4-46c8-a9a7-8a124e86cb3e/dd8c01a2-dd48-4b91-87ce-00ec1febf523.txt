@@ -1,0 +1,187 @@
+Linux Command Cheat Sheet
+|
+sudo [command]
+nohup [command]
+man [command]
+[command] &
+>> [ﬁleA]
+> [ﬁleA]
+echo -n
+xargs
+1>2&
+fg %N
+jobs
+ctrl-z
+Basic commands
+Pipe (redirect) output
+run < command> in superuser 
+mode
+run < command> immune to 
+hangup signal
+display help pages of 
+< command>
+run < command> and send task 
+to background
+append to ﬁleA, preserving 
+existing contents
+output to ﬁleA, overwriting 
+contents
+display a line of text
+build command line from 
+previous output
+Redirect stdout to stderr
+go to task N
+list task
+suspend current task
+df -h, -i
+mkfs -t -V
+resize2fs
+fsck -A -N
+pvcreate
+mount -a -t
+fdisk -l
+lvcreate
+umount -f -v
+Disk Utilities
+File system usage
+create ﬁle system
+update a ﬁlesystem, after 
+lvextend*
+ﬁle system check & repair
+ 
+create physical volume
+mount a ﬁlesystem
+edit disk partition
+create a logical volume
+umount a ﬁlesystem
+chmod -c -R
+touch -a -t
+chown -c -R
+chgrp -c -R
+touch -a -t
+File permission
+chmod ﬁle read, write and 
+executable permission
+modify (or create) ﬁle timestamp
+change ﬁle ownership
+change ﬁle group permission
+modify (or create) ﬁle 
+timestamp
+tr -d
+uniq -c -u
+split -l
+wc -w
+head -n
+cut -s
+diﬀ -q
+join -i
+more, less
+sort -n
+comm -3
+cat -s
+tail -f
+File Utilities
+translate or delete character
+report or omit repeated lines
+split ﬁle into pieces
+print newline, word, and byte 
+counts for each ﬁle
+output the ﬁrst part of ﬁles
+remove section from ﬁle
+ﬁle compare, line by line
+join lines of two ﬁles on a 
+common ﬁeld
+view ﬁle content, one page at a 
+time
+sort lines in text ﬁle
+compare two sorted ﬁles, line 
+by line
+concatenate ﬁles to the 
+standard output
+output last part of the ﬁle
+mkdir
+rmdir
+Directory Utilities
+create a directory
+remove a directory
+ﬁnd
+ls -a -C -h
+rm -r -f
+locate -i
+cp -a -R -i
+du -s
+ﬁle -b -i
+mv -f -i
+grep, egrep, fgrep -i -v
+File management
+search for a ﬁle
+list content of directory
+remove ﬁles and directory
+ﬁnd ﬁle, using updatedb(8) 
+database
+copy ﬁles or directory
+disk usage
+identify the ﬁle type
+move ﬁles or directory
+print lines matching pattern
+tar xvfz
+gzip, gunzip, zcat
+uuencode, uudecode
+zip, unzip -v
+rpm
+bzip2, bunzip2
+rar
+File compression
+create or extract .tar or .tgz 
+ﬁles
+create, extract or view .gz ﬁles
+create or extract .Z ﬁles
+create or extract .ZIP ﬁles
+create or extract .rpm ﬁles
+create or extract .bz2 ﬁles
+create or extract .rar ﬁles
+ex
+vi
+nano
+view
+emacs
+sublime
+sed
+pico
+File Editor
+basic editor
+visual editor
+pico clone
+view ﬁle only
+extensible, customizable editor
+yet another text editor
+stream editor
+simple editor
+free -m
+killall
+sensors
+top
+kill -1 -9
+service 
+[start|stop|restart]
+ps aux
+dmesg -k
+Memory & Processes
+display free and used system 
+memory
+stop all process by name
+CPU temperature
+display current processes, real 
+time monitoring
+send signal to process
+manage or run sysV init script
+display current processes, 
+snapshot
+display system messages
+netstat -r -v
+telnet
+tcpdump
+ssh -i
+ping -c
+Network
+print network information,
