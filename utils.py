@@ -1,4 +1,5 @@
 import chainlit as cl
+import tiktoken
 
 MAX_TOKEN_LIMIT = 4096
 MODEL = "gpt-4"
