@@ -19,4 +19,3 @@ Our group has 3 members:
 - **Data Souce** Here are the links of the 2 handbooks we used as the data source of our chatbot.
 - Linux handbook: https://drive.google.com/file/d/1eFnI4oLbMZ1COed7E705ZOuP65mnHIfE/view?usp=sharing
 - Git handbook: https://drive.google.com/file/d/1jwRh9akgcp8krgTDTmkqOseahQQAQwVo/view?usp=sharing
-

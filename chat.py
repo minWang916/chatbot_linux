@@ -1,3 +1,21 @@
+"""
+chat.py
+=========
+Handles the main chatbot logic, including model selection, chat session management, and response generation.
+
+Features:
+- Dynamic chat profile selection (GPT-3.5 or GPT-4).
+- Initialization and management of chat sessions with contextual history.
+- Integration with LlamaIndex for knowledge retrieval.
+- Token management and response generation using OpenAI models.
+- Cost calculation for tracking token usage.
+
+Dependencies:
+- Chainlit: Provides an interface for chatbot interactions.
+- LlamaIndex: Handles document indexing and query retrieval.
+- OpenAI: For GPT-3.5 and GPT-4 language models.
+"""
+
 import chainlit as cl
 from chainlit.types import ThreadDict
 
@@ -28,6 +46,16 @@ except:
 
 @cl.set_chat_profiles
 async def choose_profile():
+    """
+    Allow users to select a chatbot profile (GPT-3.5 or GPT-4).
+
+    Returns:
+    - list[cl.ChatProfile]: A list of available profiles, each with a name, description, and icon.
+
+    Example:
+    - GPT-3.5: For general-purpose queries.
+    - GPT-4: For more advanced and complex interactions.
+    """
     return [
         cl.ChatProfile(
             name="GPT-3.5",
@@ -43,6 +71,18 @@ async def choose_profile():
 
 @cl.on_chat_start
 async def start_chat():
+    """
+    Initialize a new chat session by setting up the selected model and query engine.
+
+    Workflow:
+    1. Retrieve the selected chat profile (GPT-3.5 or GPT-4).
+    2. Configure the OpenAI model and embedding settings.
+    3. Create a query engine using LlamaIndex for document retrieval.
+    4. Send an introductory message to the user.
+
+    Example:
+    "Hello! I'm GPT-4. You can ask me any question regarding Linux and Git commands."
+    """
     model = cl.user_session.get("chat_profile")
     if model == "GPT-4":
         model = "gpt-4"
@@ -68,6 +108,26 @@ async def start_chat():
     
 @cl.on_message
 async def response_chat(message: cl.Message):
+    """
+    Process user messages and generate a response.
+
+    Workflow:
+    1. Retrieve chat history and append the user's message.
+    2. Trim the chat history if it exceeds the token limit.
+    3. Use the query engine to retrieve or generate a response.
+    4. Calculate the token usage and cost summary.
+    5. Send the assistant's response to the user.
+
+    Parameters:
+    - message (cl.Message): The user's input message.
+
+    Returns:
+    - None: Sends the response directly via Chainlit.
+
+    Example:
+    User: "What is the git clone command?"
+    Assistant: "The `git clone` command is used to create a copy of a repository..."
+    """
     query_engine = cl.user_session.get("query_engine")
 
     chat_history = cl.user_session.get("chat_history")
@@ -118,6 +178,23 @@ async def response_chat(message: cl.Message):
     
 @cl.on_chat_resume
 async def resume_chat(thread: ThreadDict):
+    """
+    Resume a previous chat session by reconstructing the conversation history.
+
+    Workflow:
+    1. Reinitialize the chat history from the saved thread.
+    2. Set up a query engine for document retrieval.
+    3. Append previous user and assistant messages to the session.
+
+    Parameters:
+    - thread (ThreadDict): A dictionary containing saved chat steps.
+
+    Returns:
+    - None: Restores the chat session state.
+
+    Example:
+    Resumes a session with prior interactions intact.
+    """
     cl.user_session.set("chat_history", [])
     
     query_engine = index.as_query_engine(streaming=True, similarity_top_k=2)
