@@ -1,7 +1,7 @@
 import chainlit as cl
 import tiktoken
 
-MAX_TOKEN_LIMIT = 4096
+MAX_TOKEN_LIMIT = 8000
 
 MODEL_COSTS = {
     "gpt-3.5-turbo": {"input": 0.000003, "output": 0.000006},  

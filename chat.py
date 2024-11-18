@@ -62,14 +62,13 @@ async def start_chat():
     cl.user_session.set("chat_history", [])
 
     await cl.Message(
-        author="Assistant", content="Hello! Im " + model + ". You can ask me any question regarding Linux and Git command."
+        author="Assistant", content="Hello! I'm " + model + ". You can ask me any question regarding Linux and Git command."
     ).send()
     
     
 @cl.on_message
 async def response_chat(message: cl.Message):
     query_engine = cl.user_session.get("query_engine")
-    msg = cl.Message(content="", author="Assistant")
 
     chat_history = cl.user_session.get("chat_history")
     chat_history.append({"role": "user", "content": message.content})
@@ -104,7 +103,7 @@ async def response_chat(message: cl.Message):
         
 
     # Add assistant response to chat history
-    chat_history.append({"role": "assistant", "content": msg.content})
+    chat_history.append({"role": "assistant", "content": response_content})
     
     model_name = cl.user_session.get("chat_profile")
     cost_summary = create_cost_summary(chat_history, response_content, model)
