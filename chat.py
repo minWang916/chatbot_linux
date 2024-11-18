@@ -7,7 +7,7 @@ from llama_index.core.query_engine.retriever_query_engine import RetrieverQueryE
 from llama_index.core.callbacks import CallbackManager
 from llama_index.core import Settings
 
-from utils import count_tokens, trim_chat_history, create_cost_summary, MAX_TOKEN_LIMIT, MODEL_COSTS, MODEL
+from utils import count_tokens, trim_chat_history, create_cost_summary, MAX_TOKEN_LIMIT, MODEL_COSTS
 
 from llama_index.core import (
     Settings,
@@ -43,8 +43,14 @@ async def choose_profile():
 
 @cl.on_chat_start
 async def start_chat():
+    model = cl.user_session.get("chat_profile")
+    if model == "GPT-4":
+        model = "gpt-4"
+    if model == "GPT-3.5":
+        model = "gpt-3.5-turbo"
+    
     Settings.llm = OpenAI(
-        model=MODEL, temperature=0.5, max_tokens=1024, streaming=True
+        model=model, temperature=0.5, max_tokens=1024, streaming=True
     )
     Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
     Settings.context_window = 8192
@@ -56,7 +62,7 @@ async def start_chat():
     cl.user_session.set("chat_history", [])
 
     await cl.Message(
-        author="Assistant", content="Hello! Im an AI assistant. You can ask me any question regarding Linux and Git command."
+        author="Assistant", content="Hello! Im " + model + ". You can ask me any question regarding Linux and Git command."
     ).send()
     
     
@@ -76,11 +82,16 @@ async def response_chat(message: cl.Message):
         query_input = f"Given the following conversation history:\n{context}\nAssistant:"
 
     # Count tokens
-    input_token_count = count_tokens(chat_history)
+    model = cl.user_session.get("chat_profile")
+    if model == "GPT-4":
+        model = "gpt-4"
+    if model == "GPT-3.5":
+        model = "gpt-3.5-turbo"
+    input_token_count = count_tokens(chat_history, model)
 
     # Trim history if necessary
     if input_token_count > MAX_TOKEN_LIMIT:
-        chat_history = trim_chat_history(chat_history)
+        chat_history = trim_chat_history(chat_history, model)
         print("Chat history trimmed.")
 
     # Query the model
@@ -95,8 +106,9 @@ async def response_chat(message: cl.Message):
     # Add assistant response to chat history
     chat_history.append({"role": "assistant", "content": msg.content})
     
-    cost_summary = create_cost_summary(chat_history, response_content)
-    full_response = response_content + cost_summary
+    model_name = cl.user_session.get("chat_profile")
+    cost_summary = create_cost_summary(chat_history, response_content, model)
+    full_response = model_name + ": " + response_content + cost_summary
     
     # Send the final message with the combined response and cost summary
     await cl.Message(
